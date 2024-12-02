@@ -1,0 +1,45 @@
+\documentclass[a4paper]{article}
+\usepackage[affil-it]{authblk}
+\usepackage[backend=bibtex,style=numeric]{biblatex}
+\usepackage{ctex}
+\usepackage{geometry}
+\geometry{margin=1.5cm, vmargin={0pt,1cm}}
+\setlength{\topmargin}{-1cm}
+\setlength{\paperheight}{29.7cm}
+\setlength{\textheight}{25.3cm}
+
+\addbibresource{citation.bib}
+
+\begin{document}
+% =================================================
+\title{Proj: Design}
+
+\author{陈昊鹏  3220103347@zju.edu.cn}
+\affil{数学与应用数学(强基计划)}
+
+
+\date{Due time: \today}
+
+\maketitle
+% ============================================
+\begin{itemize}
+    \item 设计类$B\_spline$,它接受一个从小到大有序的浮点数组参数和整数变量,分别代表需要生成的B样条的区间范围和阶数大小N,然后从区间最小的位置
+    向前一个单位取一个新点,从区间最大的位置向后每隔一个单位取一个点,直到取到N个点,然后将所有这些点保存在成员变量$vector<double> \, knots$中,
+    这个操作的目的是便于B样条的递归定义.此外还设计$double \, solve(int \, n,int \, i,double \, x)$函数,它的作用是在样条$B_{i}^{n}$
+    上求解$x$,这里的$i$代表最初传入的浮点数组中位置为$i$的点,具体的求解方法则是利用B样条的递归定义.
+    \item 设计类$Interpolation\_BSpline$,它的作用是对于给定的点和适当的条件,生成该区间上的B样条拟合曲线.它有两种生成方式,一种是接受横坐标点列和纵坐标
+    点列和阶数n,然后对于纵坐标将其保存在成员变量$knots\_y$中.对于横坐标点列向后每个一个单位取一个点,直到取到n-1个点,从而得到新的点列,将其保存在成员变量$knots\_x$中.
+    这样做的原因是,最终拟合的曲线需要$B_{2-n}^{n},B_{3-n}^{n},...,B_{0}^{n}$样条的参与.另一种生成方式是直接给定每一个B样条的对应系数,直接将其保存至成员变量$coef$中.
+    \item 在类$Interpolation\_BSpline$中,对于三次样条,设计三类接口用于生成不同边界的曲线.分别是\\
+    $void \, natural\_BSpline\_3\_2()$,$void \, complete\_Spline\_3\_2(double \, boundary\_left,double \, boundary\_right)$\\
+    和$void \, periodic\_Spline\_3\_2()$,它们运行的逻辑是根据不同的边界条件,生成不同的线性方程组$Ax=b$,然后求解每一个B样条的对应系数,将其保存在成员变量$vector<double> \, coef$中.
+    \item 在类$Interpolation\_BSpline$中,额外设计一阶B样条生成函数,它直接将$knots\_y$中的元素作为对应B样条的系数.此外还设计函数$double \, solve(double \, x)$,它的作用是对于给定的$x$,返回拟合曲线在给点处的取值.
+    \item 设计函数$double \space PP\_1\_0(vector<double>  knots\_x,vector<double>knots\_y,double x)$,\\
+    它的作用是生成指定区间上的一阶PP样条,返回它在$x$处的值.
+    \item 设计三个不同的类$PP\_3\_2\_complete$,$PP\_3\_2\_periodic$和$PP\_3\_2\_natural$.对应三种不同边界条件的三阶PP样条.他们都接受横坐标序列和纵坐标序列,然后通过$compute\_coefficients()$函数,
+    生成样条在每一个区间上的三次多项式系数.运行逻辑是通过边界条件建立不同的线性方程组$Ax=b$,然后求解处每一个连接点处的导数值,然后利用三次插值多项式系数与边界点和导数值的关系求解多项式系数.此外均设计$double \, solve(double \, x)$函数求解
+    拟合后的PP样条曲线在对应点处的取值情况.
+    \item 用python设计平面曲线拟合$curve\_fitting$函数和空间曲线拟合$curve\_fitting$函数.它们都是以曲线累计长度为横坐标,位置坐标分量(如x,y,z)为纵坐标,生成对应的三次样条用于拟合曲线累计长度与不同分量的关系.
+\end{itemize}
+
+\end{document}
